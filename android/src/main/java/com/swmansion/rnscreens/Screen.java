@@ -19,6 +19,8 @@ import com.facebook.react.uimanager.ReactPointerEventsView;
 import com.facebook.react.uimanager.UIManagerModule;
 import com.facebook.react.uimanager.events.EventDispatcher;
 
+import java.lang.reflect.Field;
+
 public class Screen extends ViewGroup implements ReactPointerEventsView {
 
   public enum StackPresentation {
@@ -162,8 +164,19 @@ public class Screen extends ViewGroup implements ReactPointerEventsView {
     // ignore - layer type is controlled by `transitioning` prop
   }
 
-  protected void setContainer(@Nullable ScreenContainer container) {
-    mContainer = container;
+  protected void setContainer(@Nullable ScreenContainer mContainer) {
+    this.mContainer = mContainer;
+    if (mContainer == null) {
+      try {
+        Field f = mFragment.getClass().getSuperclass().getDeclaredField("mContainerId");
+        f.setAccessible(true);
+        f.set(this.mFragment, 0);
+      } catch(NoSuchFieldException e) {
+        // Eat the error, nom nom
+      } catch(IllegalAccessException e) {
+        // This one too. It is delicious.
+      }
+    }
   }
 
   protected @Nullable ScreenContainer getContainer() {
