@@ -1,14 +1,21 @@
-#import <React/RCTViewManager.h>
 #import <React/RCTUIManagerObserverCoordinator.h>
+#import <React/RCTViewManager.h>
+
 #import "RNSScreenContainer.h"
 
-@interface RNSScreenStackView : UIView <RNSScreenContainerDelegate>
+@interface RNScreensNavigationController : UINavigationController <RNScreensViewControllerDelegate>
+
+@end
+
+@interface RNSScreenStackView : UIView <RNSScreenContainerDelegate, RCTInvalidating>
+
+@property (nonatomic, copy) RCTDirectEventBlock onFinishTransitioning;
 
 - (void)markChildUpdated;
 - (void)didUpdateChildren;
 
 @end
 
-@interface RNSScreenStackManager : RCTViewManager
+@interface RNSScreenStackManager : RCTViewManager <RCTInvalidating>
 
 @end
